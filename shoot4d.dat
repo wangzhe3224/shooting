@@ -1,0 +1,59 @@
+0.01   0.0   0.01   0.5   0.1
+23.78672712   1.03201730                                             ! primary
+
+------------------------------ homoclinic solutions --------------------------
+
+xepirou,xlamda,vv,xalpha,xmu   [i.e., epsilon, gamma, nu, alpha, mu]
+xl, theta                      [shooting parameters]
+
+note: in order to have meaningful continuation runs that correspond to a
+      (single) varying physical parameter it seems best to fix gamma, mu and
+      epsilon, and to vary alpha and nu (corresponding to varying twisting
+      moment (p_phi=m) and magnetic field (or current), respectively (or it
+      may be 'cleaner' to think of p_phi as fixed, since most quantities are
+      scaled by it, and of the force C_2 as varying); also note that nu
+      cannot be set to zero if we imagine a magnetic field to be present,
+      while epsilon can since 1/J can be zero (although for mechanical
+      consistency you then probably want to set 1/K=0 as well, in which case
+      epsilon=gamma=0 and the system is integrable)
+
+-------
+case 1:
+-------
+
+0.85   0.1   0.001   0.6   0.01
+22.54159527   5.08637596
+
+-------------------------------------------
+case 2 (from the J. Phys. A paper, Fig. 4):
+-------------------------------------------
+
+0.01   0.0   0.01   0.5   0.1
+23.78672712   1.03201730                                             ! primary
+
+   pi/(2*w)=3.35398212164719
+
+0.01   0.0   0.01   0.5   0.1
+37.74111233   1.03208364                                            ! bi-modal
+
+0.01   0.0   0.01   0.5   0.1
+41.09488626   1.03201580
+
+0.01   0.0   0.01   0.5   0.1
+44.44304998   1.03201734
+
+0.01   0.0   0.01   0.5   0.1
+47.72558679   1.03201730
+
+0.01   0.0   0.01   0.5   0.1
+51.40126069   1.03201730
+
+0.01   0.0   0.01   0.5   0.1
+54.78800976   1.03201730
+
+0.01   0.0   0.01   0.5   0.1
+58.19984401   1.03201730
+
+
+0.01   0.0   0.01   0.5   0.1
+29.58437346   5.13916959                            ! bi-modal with psi(L)=2pi
