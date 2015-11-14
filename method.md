@@ -6,6 +6,7 @@
 
 # Problems
 - What is the function of *fcnn*? (in line 404), 4 equations...
-- What is the function of *f*? (in line 238) Which is the ODE systems? 4 equations.
+  * here is the residual equation of shooting method used for Newton method.
+- What is the function of *f*? (in line 238) Which is the ODE system? 4 equations.
 - What is the function of *fcn*? (in line 132), No equations..
 - 
