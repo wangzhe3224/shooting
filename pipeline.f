@@ -87,7 +87,7 @@ c
       twopi=8d0*datan(1d0)
       if (newton) then                  ! skip for simple forward integration
       do 5 i=1,1                               ! loop for simple continuation
-         xtol=1d-12
+         xtol=1d-10
          maxfev=50
          ml=nx-1
          mu=nx-1
@@ -184,8 +184,8 @@ c set up the residuals:
 c
 c --- R2 reversible solutions (shoot into symmetric section):
 c
-      fv(1)=dsin(ys(2)/2d0)                                 ! psi=0, 2pi, ...
-      fv(2)=ys(3)                                                   ! psita=0
+      fv(1)=ys(2)                                                  ! u'(L)=0
+      fv(2)=ys(4)                                                  ! u'''(L)=0
 c
       write(*,13)x(1),x(2),fv(1),fv(2)
 13    format(4e15.6)
@@ -226,16 +226,17 @@ c       call solvefix(x,fv2,PAR)
 c       fp=x
 *       print*,'testp',fp(1),fp(2),fp(3),fp(4)
 c
+      fp(1)=0d0
+      fp(2)=0d0
+      fp(3)=0d0
+      fp(4)=0d0
+c
 c find eigenvectors:
 c
       call xjac(n,fp,a)
       call eigs(a,v)
 c
-      fp(1)=0
-      fp(2)=0
-      fp(3)=0
-      fp(4)=0
-      do 50 i=1,4   
+      do 50 i=1,4
          ys(i)=fp(i)+eps*(v(1,i)*dcos(delta)+v(2,i)*dsin(delta))
 50    continue
 c
@@ -251,6 +252,8 @@ c****************************************************************************
       common /init/xl,delta,fp(4)
       common /pars/EI,P,aa,bb,u_r
 c
+      pi=4d0*datan(1d0)
+c
 c equilibrium equation:
 c
       du(1)= u(2)
@@ -259,9 +262,8 @@ c
 c
       du(3)= u(4)
 c
-      du(4)= -1/EI*(P*U(3) + aa*(datan(1d0)/u_r)*u(1) -
-     +     bb*(datan(1d0)/u_r)**3*u(1)**3 +
-     +     aa/120*(datan(1d0)/u_r)**5*u(1)**5)
+      du(4)= -1d0/EI*(P*U(3) + aa*(pi/u_r)*u(1) -
+     +     bb*(pi/u_r)**3*u(1)**3 + aa/120d0*(pi/u_r)**5*u(1)**5)
 c
 c rescale the equations:
 c
@@ -280,22 +282,27 @@ c****************************************************************************
       dimension u(n),a(n,n)
       common /init/xl,delta,fp(4)
       common /pars/EI,P,aa,bb,u_r
-      a(1,1) = 0
-      a(1,2) = 1
-      a(1,3) = 0
-      a(1,4) = 0
-      a(2,1) = 0
-      a(2,2) = 0
-      a(2,3) = 1
-      a(2,4) = 0
-      a(3,1) = 0
-      a(3,2) = 0
-      a(3,3) = 0
-      a(3,4) = 1
-      a(4,1) = -1/EI*(aa*(datan(1d0)/u_r) - 3*bb*(datan(1d0)/u_r)**3*
-     +     u(1)**2 + 5*aa/120*(datan(1d0)/u_r)**5*u(1)**4)
-      a(4,2) = 0
-      a(4,3) = -1/EI * P
+c
+      pi=4d0*datan(1d0)
+c
+      a(1,1) = 0d0
+      a(1,2) = 1d0
+      a(1,3) = 0d0
+      a(1,4) = 0d0
+      a(2,1) = 0d0
+      a(2,2) = 0d0
+      a(2,3) = 1d0
+      a(2,4) = 0d0
+      a(3,1) = 0d0
+      a(3,2) = 0d0
+      a(3,3) = 0d0
+      a(3,4) = 1d0
+      a(4,1) = -1d0/EI*(aa*(pi/u_r) - 3d0*bb*(pi/u_r)**3*u(1)**2 +
+     +         5d0*aa/120d0*(pi/u_r)**5*u(1)**4)
+      a(4,2) = 0d0
+      a(4,3) = -P/EI
+      a(4,4) = 0d0
+c
       return
       end
 c
@@ -309,7 +316,7 @@ c
       parameter (lnx=(nx*(nx+1))/2)
       dimension diag(nx),fjac(nx,nx),r(lnx),qtf(nx)
       dimension wa1(nx),wa2(nx),wa3(nx),wa4(nx)
-      dimension x(nx),fv(nx), PAR(20), PAR1(20)
+      dimension x(nx),fv(nx)
       external fcnn
 c
 c  initial guesses:
@@ -348,8 +355,10 @@ c*****************************************************************************
       subroutine fcnn(nx,x,fv2,iflag)
       implicit real*8 (a-h,o-z)
 c
-      dimension fv2(nx),x(nx), PAR(20)
+      dimension fv2(nx),x(nx)
       common /pars/EI,P,aa,bb,u_r
+c
+      pi=4d0*datan(1d0)
 c
       U1=x(1)
       U2=x(2)
@@ -362,9 +371,8 @@ c
 c
       eq3 = U4
 c
-      eq4 = -1/EI*(P*U3 + aa*(datan(1d0)/u_r)*U1 -
-     +     bb*(datan(1d0)/u_r)**3*U1**3 +
-     +     aa/120*(datan(1d0)/u_r)**5*U1**5)
+      eq4 = -1/EI*(P*U3 + aa*(pi/u_r)*U1 -
+     +     bb*(pi/u_r)**3*U1**3 + aa/120*(pi/u_r)**5*U1**5)
 c
       fv2(1)=eq1
       fv2(2)=eq2
