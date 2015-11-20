@@ -1,0 +1,18 @@
+   0  -1.7976+308  1.7976+308 -1.7976+308  1.7976+308
+   0   EPSL= 1.0000E-12  EPSU = 1.0000E-12  EPSS = 1.0000E-10
+   0   DS  = 1.0000E-04  DSMIN= 1.0000E-05  DSMAX= 1.0000E-02
+   0   NDIM=   4   IPS =   4   IRS =   0   ILP =   1
+   0   NTST=  50   NCOL=   4   IAD =   3   ISP =   2
+   0   ISW =   1   IPLT=   0   NBC =   4   NINT=   0
+   0   NMX=  200   NPR=   10   MXBF=  10   IID =   2   IADS=   1
+   0   ITMX= 100   ITNW=   7   NWTN=   3   JAC =   0   NUZR=   0
+   0   NPAR=  20   THL = {}    THU = {}
+   0   e = 'pipelineAuto' s = '/'
+   0   User-specified constants, where different from above:
+   0   ISW =   0
+   0   User-specified parameters:         1   2   3   4   5
+   0   Active continuation parameter:     1
+   0
+   0    PT  TY  LAB    PAR(1)             L2-NORM            MAX U(1)           MAX U(2)           PAR(2)             PAR(3)             PAR(4)             PAR(5)          
+   1     1   9    1   9.5212986827E+07   1.2996161742E-02   5.8820051000E-02   6.5399859968E-03   3.1000000000E+06   9.7212676767E+02   1.5590726397E+02   1.0000000000E-01
+   1     2  -9    2   9.5212986827E+07   1.2996161742E-02   5.8820051000E-02   6.5399859968E-03   3.1000000000E+06   9.7212676767E+02   1.5590726397E+02   1.0000000000E-01
