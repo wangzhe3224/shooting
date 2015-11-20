@@ -1,9 +1,10 @@
 C********************************************************************************
 C     2-D pipeline model based on beam model.
+C
 C     - Equation:
 C     EI*u'''' + P*u'' + a*(pi/u_r)*u -b*(pi/u_r)^3*u^3 +a/120*(pi/u_r)^5*u^5 = 0
 C
-C     - Variable:
+C     - Variables:
 C     U(1) = u
 C     U(2) = u'
 C     U(3) = u''
@@ -16,15 +17,16 @@ C     du(3) = u(4)
 C     du(4) = -1/EI*(P*U(3) + a*(pi/u_r)*u(1) -b*(pi/u_r)^3*u(1)^3
 C             + a/120*(pi/u_r)^5*u(1)^5)
 C
-C     - Parameters
+C     - Parameters:
 C     EI     bending stiffness
 C     P      compressive force
 C     aa     972.1267676740492
 C     bb     155.9072639743452
 C     u_r    0.1
 C
-C     - shooting parameter
-C     
+C     - Shooting parameters:
+C     L      (half) length
+C     delta  angle of departure in unstable manifold
 C
 C********************************************************************************
       program shoot
@@ -44,9 +46,10 @@ c
       external fcn,f,output
       logical newton
 c
-      newton=.true.                                      ! Newton iterations?
+*      newton=.true.                                      ! Newton iterations?
 c
       open(unit=1,file='pipeline.dat',status='unknown')
+      read(1,*)newton
       read(1,*)EI,P,aa,bb,u_r                      ! parameters
       read(1,*)(x(j),j=1,nx)                                 ! guess unknowns
 c
@@ -58,9 +61,9 @@ c
 *      bb=0.6d0
 *      u_r=0.01d0
 c
-c      EI=0.01d0   ! epsilon                  ! case 2 (J. Phys. A paper)
-c      P=0d0       ! gamma
-c      aa=0.01d0        ! nu
+c      EI=0.01d0                              ! case 2
+c      P=0d0
+c      aa=0.01d0
 c      bb=0.5d0
 c      u_r=0.1d0
 c
@@ -72,11 +75,8 @@ c
 c
 c shooting parameters:
 c
-c      xl=24d0                                     ! for case 2
+c      xl=24d0
 c      delta=1d0
-c
-*       xl=23d0                                    ! for case 1
-*       delta=5d0
 c
        xl=x(1)
        delta=x(2)
@@ -87,7 +87,7 @@ c
       twopi=8d0*datan(1d0)
       if (newton) then                  ! skip for simple forward integration
       do 5 i=1,1                               ! loop for simple continuation
-         xtol=1d-10
+         xtol=1d-12
          maxfev=50
          ml=nx-1
          mu=nx-1
@@ -214,13 +214,7 @@ c
 *      fp(3)=0d0
 *      fp(4)=bb/sqrt(bb*bb+u_r)
 c
-c find fixed point
-c
-      PAR(1)=EI
-      PAR(2)=P
-      PAR(3)=aa
-      PAR(4)=bb
-      PAR(5)=u_r
+c find fixed point:
 c
 c       call solvefix(x,fv2,PAR)
 c       fp=x
@@ -265,6 +259,15 @@ c
       du(4)= -1d0/EI*(P*U(3) + aa*(pi/u_r)*u(1) -
      +     bb*(pi/u_r)**3*u(1)**3 + aa/120d0*(pi/u_r)**5*u(1)**5)
 c
+c strut on quadratic foundation (Champneys & Spence):
+*      P=1.5d0
+*      du(4)=-P*u(3)-u(1)+u(1)**2
+c
+c strut on cubic/quintic foundation (Budd, Hunt & Kuske):
+*      P=1.7d0
+*      a3=dsqrt(2d0)
+*      du(4)=-P*u(3)-u(1)+a3*u(1)**3-u(1)**5
+c
 c rescale the equations:
 c
       do 100 i=1,n
@@ -302,6 +305,21 @@ c
       a(4,2) = 0d0
       a(4,3) = -P/EI
       a(4,4) = 0d0
+c
+c strut on quadratic foundation:
+*      P=1.5d0
+*      a(4,1) = -1d0+2d0*u(1)
+*      a(4,2) = 0d0
+*      a(4,3) = -P
+*      a(4,4) = 0d0
+c
+c strut on cubic/quintic foundation:
+*      P=1.7d0
+*      a3=dsqrt(2d0)
+*      a(4,1) = -1d0+3d0*a3*u(1)**2-5d0*u(1)**4
+*      a(4,2) = 0d0
+*      a(4,3) = -P
+*      a(4,4) = 0d0
 c
       return
       end
@@ -441,13 +459,13 @@ c
               if (dabs(vr(2,i)-vr(2,i+1)).lt.zero) then
                  if (dabs(vr(3,i)-vr(3,i+1)).lt.zero) then
                     if (dabs(vr(4,i)-vr(4,i+1)).lt.zero) then
-                             do 250 j=1,4
-                                vr(j,i+1)=vi(j,i)
-250                          continue
-                          endif
-                       endif
+                       do 250 j=1,4
+                          vr(j,i+1)=vi(j,i)
+250                    continue
                     endif
                  endif
+              endif
+           endif
 300     continue
 
         check_re1=a(1,1)*vr(3,1)+a(1,2)*vr(3,2)+a(1,3)*vr(3,3)
