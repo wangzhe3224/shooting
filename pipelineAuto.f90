@@ -91,6 +91,7 @@
 !  Interpolate by using a linear spline:
 !
          IF ((1.LE.K).AND.(K.LT.NPOINT)) THEN
+
             DO 10 J=1,NDIM
                SLOPE=(UI(J,K+1)-UI(J,K))/(TI(K+1)-TI(K))
                U(J)=UI(J,K)+SLOPE*(T-TI(K))
@@ -160,14 +161,6 @@
       DO I=1,NBC
 	  FB(I)=0d0
       ENDDO
-
-      FB(1)= U0(1)
-
-      FB(2)= U0(2)
-
-      FB(3)= U1(2)
-
-      FB(4)= U1(4)
  
 ! Jacobian matrix
 
@@ -203,19 +196,22 @@
 
 ! project onto unstable manifold:
 
-!       FB(5)=vr(1,1)*(u0(1)-fp1)+vr(2,1)*(u0(2)-fp2)+&  ! Ls(x(0)-fix_Point)=0
-!             vr(3,1)*(u0(3)-fp3)+vr(4,1)*(u0(4)-fp4)
-!       FB(6)=vr(1,2)*(u0(1)-fp1)+vr(2,2)*(u0(2)-fp2)+&
-!            vr(3,2)*(u0(3)-fp3)+vr(4,2)*(u0(4)-fp4)
+       FB(1)=vr(1,1)*(u0(1)-fp1)+vr(2,1)*(u0(2)-fp2)+&  ! Ls(x(0)-fix_Point)=0
+            vr(3,1)*(u0(3)-fp3)+vr(4,1)*(u0(4)-fp4)
 
-!      FB(5)=vr(1,1)*(u0(1)-fp1)+vr(1,2)*(u0(2)-fp2)+&  ! Ls(x(0)-fix_Point)=0
-!             vr(1,3)*(u0(3)-fp3)+vr(1,4)*(u0(4)-fp4)
-!       FB(6)=vr(2,1)*(u0(1)-fp1)+vr(2,2)*(u0(2)-fp2)+&
-!             vr(2,3)*(u0(3)-fp3)+vr(2,4)*(u0(4)-fp4)
+       FB(2)=vr(1,2)*(u0(1)-fp1)+vr(2,2)*(u0(2)-fp2)+&
+            vr(3,2)*(u0(3)-fp3)+vr(4,2)*(u0(4)-fp4)
+
+       !FB(5)=vr(1,1)*(u0(1)-fp1)+vr(1,2)*(u0(2)-fp2)+&  ! Ls(x(0)-fix_Point)=0
+       !      vr(1,3)*(u0(3)-fp3)+vr(1,4)*(u0(4)-fp4)
+       !FB(6)=vr(2,1)*(u0(1)-fp1)+vr(2,2)*(u0(2)-fp2)+&
+       !      vr(2,3)*(u0(3)-fp3)+vr(2,4)*(u0(4)-fp4)
 
 ! symmetric section:
 
-!       FB(7)=dsin(u1(2))                                        ! sita=Psita=0
+       FB(3)=U1(2)
+       FB(4)=U1(4)
+       ! sita=Psita=0
 !       FB(8)=u1(3)
 
 !       DO i=1,NBC
